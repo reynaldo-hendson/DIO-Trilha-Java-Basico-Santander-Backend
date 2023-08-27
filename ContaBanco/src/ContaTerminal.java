@@ -1,8 +1,4 @@
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.Locale;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -10,12 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ContaTerminal {
 
-    //Calcula o tamanho de uma String
-    public static int calcularTamanho(int numero) {
-        return String.valueOf(numero).length();
-    }
-
-    //Recebe uma String de um número com ponto que converte por uma virgula, depois transforma em Double.
+    //Recebe uma String de um número, depois transforma em Double.
     public static double validarEConverter(String input){
         String entradaFormatada = input;
 
@@ -35,7 +26,7 @@ public class ContaTerminal {
 
     //Entidade Conta
     public static class Conta{
-        private Integer usuario;
+        private Integer numero;
         private String agencia;
         private String nomeCliente;
         private Double saldo;
@@ -43,19 +34,19 @@ public class ContaTerminal {
         public Conta() {
         }
 
-        public Conta(Integer usuario, String agencia, String nomeCliente, Double saldo) {
-            this.usuario = usuario;
+        public Conta(Integer numero, String agencia, String nomeCliente, Double saldo) {
+            this.numero = numero;
             this.agencia = agencia;
             this.nomeCliente = nomeCliente;
             this.saldo = saldo;
         }
 
-        public Integer getUsuario() {
-            return usuario;
+        public Integer getNumero() {
+            return numero;
         }
 
-        public void setUsuario(Integer usuario) {
-            this.usuario = usuario;
+        public void setNumero(Integer numero) {
+            this.numero = numero;
         }
 
         public String getAgencia() {
@@ -85,7 +76,7 @@ public class ContaTerminal {
         @Override
         public String toString() {
             return "Conta{" +
-                    "usuario=" + usuario +
+                    "numero=" + numero +
                     ", agencia='" + agencia + '\'' +
                     ", nomeCliente='" + nomeCliente + '\'' +
                     ", saldo=" + saldo +
@@ -94,7 +85,6 @@ public class ContaTerminal {
     }
 
     public static void main(String[] args) {
-        // TODO: 26/08/2023 Conhecer e importar a classe Scanner
 
         Scanner inputString = new Scanner(System.in);
         Scanner inputNumber = new Scanner(System.in);
@@ -106,14 +96,14 @@ public class ContaTerminal {
         System.out.println("--- A seguir digite os dados solicitados para a criação da sua conta ---");
         System.out.println("------------------------------------------------------------------------");
 
-        System.out.println("Por favor, digite o número da Agência!");
+        System.out.println("Por favor, digite o número da Agência com o digito separado por (-)!");
         System.out.println("Agência: ");
         conta.setAgencia(inputString.nextLine());
         System.out.println("------------------------------------------------------------------------");
 
-        System.out.println("Por favor, digite o número da Conta");
+        System.out.println("Por favor, digite o número da Conta sem o digito!");
         System.out.println("Conta: ");
-        conta.setUsuario(inputNumber.nextInt());
+        conta.setNumero(inputNumber.nextInt());
         System.out.println("------------------------------------------------------------------------");
 
         System.out.println("Por favor, digite seu primeiro e último nome!");
@@ -121,7 +111,7 @@ public class ContaTerminal {
         conta.setNomeCliente(inputString.nextLine());
         System.out.println("------------------------------------------------------------------------");
 
-        System.out.println("Por favor, digite o valor para o seu saldo sem os centavos!");
+        System.out.println("Por favor, digite o valor para o seu saldo!");
         System.out.println("Saldo: ");
         String entrada = inputString.nextLine();
         conta.setSaldo(validarEConverter(entrada));
@@ -136,7 +126,7 @@ public class ContaTerminal {
         scheduler.schedule(() -> {
             System.out.printf("Olá %s, obrigado por criar uma conta em nosso banco é seja bem vindo, sua agência é %s, " +
                             "conta %d e seu saldo: R$ %.2f já está disponível para saque."
-                    ,conta.getNomeCliente(),conta.getAgencia(),conta.getUsuario(),conta.getSaldo());
+                    ,conta.getNomeCliente(),conta.getAgencia(),conta.getNumero(),conta.getSaldo());
             scheduler.shutdown(); // Encerra o scheduler após a execução da tarefa
         }, 2, TimeUnit.SECONDS);
 
