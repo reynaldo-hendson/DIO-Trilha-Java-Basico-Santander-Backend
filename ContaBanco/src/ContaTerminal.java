@@ -1,4 +1,8 @@
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -6,10 +10,27 @@ import java.util.concurrent.TimeUnit;
 
 public class ContaTerminal {
 
+    //Calcula o tamanho de uma String
     public static int calcularTamanho(int numero) {
         return String.valueOf(numero).length();
     }
 
+    //Recebe uma String de um número com ponto que converte por uma virgula, depois transforma em Double.
+    public static double validarEConverter(String input){
+        // Defina o formato de acordo com a regional (vírgula como separador decimal)
+        Locale locale = new Locale("pt", "BR");
+        DecimalFormat formato = (DecimalFormat) DecimalFormat.getInstance(locale);
+
+        try {
+            return formato.parse(input).doubleValue();
+        } catch (Exception e) {
+            System.out.println("Entrada inválida! Digite um número decimal válido.");
+            return 0.0; // Valor padrão ou outra ação de tratamento de erro
+        }
+
+    }
+
+    //Entidade Conta
     public static class Conta{
         private Integer usuario;
         private String agencia;
@@ -97,9 +118,10 @@ public class ContaTerminal {
         conta.setNomeCliente(inputString.nextLine());
         System.out.println("------------------------------------------------------------------------");
 
-        System.out.println("Por favor, digite seu primeiro e último nome!");
+        System.out.println("Por favor, digite o valor para o seu saldo sem os centavos!");
         System.out.println("Saldo: ");
-        conta.setSaldo(inputNumber.nextDouble());
+        String entrada = inputString.nextLine();
+        conta.setSaldo(validarEConverter(entrada));
         System.out.println("------------------------------------------------------------------------");
 
 
@@ -107,13 +129,13 @@ public class ContaTerminal {
         inputNumber.close();
         System.out.println("Processando os dados...");
 
-        // Agendando a tarefa para ser executada após 3 segundos
+        // Agendando a tarefa para ser executada após 2 segundos
         scheduler.schedule(() -> {
             System.out.printf("Olá %s, obrigado por criar uma conta em nosso banco é seja bem vindo, sua agência é %s, " +
                             "conta %d e seu saldo: R$ %.2f já está disponível para saque."
                     ,conta.getNomeCliente(),conta.getAgencia(),conta.getUsuario(),conta.getSaldo());
             scheduler.shutdown(); // Encerra o scheduler após a execução da tarefa
-        }, 3, TimeUnit.SECONDS);
+        }, 2, TimeUnit.SECONDS);
 
     }
 
