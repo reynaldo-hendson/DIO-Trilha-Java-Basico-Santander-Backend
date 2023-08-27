@@ -17,14 +17,17 @@ public class ContaTerminal {
 
     //Recebe uma String de um número com ponto que converte por uma virgula, depois transforma em Double.
     public static double validarEConverter(String input){
-        // Defina o formato de acordo com a regional (vírgula como separador decimal)
-        Locale locale = new Locale("pt", "BR");
-        DecimalFormat formato = (DecimalFormat) DecimalFormat.getInstance(locale);
+        String entradaFormatada = input;
+
+        // Verifica se a entrada utiliza vírgula como separador decimal
+        if (input.contains(",")) {
+            entradaFormatada = input.replace(",", ".");
+        }
 
         try {
-            return formato.parse(input).doubleValue();
-        } catch (Exception e) {
-            System.out.println("Entrada inválida! Digite um número decimal válido.");
+            return Double.parseDouble(entradaFormatada);
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida! Digite um número válido.");
             return 0.0; // Valor padrão ou outra ação de tratamento de erro
         }
 
